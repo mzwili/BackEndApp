@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hompage</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <h2>
+            <a href="/">My Application</a>
+        </h2>
+        <nav>
+            <a href="/login">Log In</a>
+        </nav>
+    </header>
+
+    <main>
+        <form action="/register" method="POST">
+            <fieldset>
+                <legend>Create Account</legend>
+                <label for="Username"><small>Username</small></label>
+                <input type="text" id="Username" name="Username" autocomplete="off">
+    
+                <label for="password"><small>Password</small></label>
+                <input type="text" id="password" name="password" autocomplete="off">
+                <br>
+                <button>Sign Up</button>
+            </fieldset>
+        </form>
+    </main>
+
+    <footer>
+        <small>&copy; Our Wonderful App</small>
+    </footer>
+</body>
+</html>
