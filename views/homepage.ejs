@@ -18,13 +18,16 @@
 
     <main>
         <form action="/register" method="POST">
+            <% errors.forEach(error => {%>
+                <p class="notice"><%= error %></p>
+           <% }); %>
             <fieldset>
                 <legend>Create Account</legend>
                 <label for="Username"><small>Username</small></label>
                 <input type="text" id="Username" name="Username" autocomplete="off">
     
                 <label for="password"><small>Password</small></label>
-                <input type="text" id="password" name="password" autocomplete="off">
+                <input type="password" id="password" name="password" autocomplete="off" >
                 <br>
                 <button>Sign Up</button>
             </fieldset>
