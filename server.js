@@ -1,5 +1,21 @@
 const express = require("express");
+const db = require("better-sqlite3")("backendApp.db");
+db.pragma("journal_mode = WAL");
 const app = express();
+
+// database setup
+const createTables = db.transaction(() => {
+    db.prepare(`
+        CREATE TABLE IF NOT EXITS clients (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username STRING NOT NULL UNIQUE,
+        password STRING NOT NULL
+        )
+        `
+    ).run()
+})
+
+createTables();
 
 app.use(function(request, response, next){
     response.locals.errors = [];
