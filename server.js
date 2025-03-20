@@ -57,14 +57,24 @@ app.post("/register", (request, response) => {
 
     if(errors.length){
         return response.render("homepage", { errors });
-    } else {
-        response.send("Form Successfully Sent, Thank You!!!")
     }
 
     //save new user into db
+    const salt = bcrypt.genSaltSync(10);
+    request.body.password = bcrypt.hashSync(request.body.password, salt);
+
     const databaseStatement = db.prepare("INSERT INTO users (username, password) VALUES (?, ?)");
     databaseStatement.run(request.body.username, request.body.password)
-    response.send("Thank you!")
+
+    //user cookie
+    response.cookie("backEndApp", "secretValue", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60 * 24
+    })
+
+    return response.redirect("login")
     
 });
 
