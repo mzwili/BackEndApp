@@ -1,6 +1,7 @@
 require("dotenv").config()
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
 const express = require("express");
 const db = require("better-sqlite3")("backendApp.db");
 db.pragma("journal_mode = WAL");
@@ -22,17 +23,36 @@ const createTables = db.transaction(() => {
 
 createTables();
 
-app.use(function(request, response, next){
-    response.locals.errors = [];
-    next();
-})
 
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: false}));
 app.use(express.static("public"));
+app.use(cookieParser());
+
+
+app.use(function(request, response, next){
+    response.locals.errors = [];
+    
+
+    try{
+        const decodeTkn = jwt.verify(request.cookies.backEndApp, process.env.JWTSECRET);
+        request.user = decodeTkn;
+    }catch (error){
+        request.user = false;
+    }
+
+    response.locals.user = request.user;
+    next();
+})
+
+
+
 
 app.get("/", (request, response) => {
+    if (request.user){
+        return response.render("dashboard");
+    }
     response.render("homepage");
 });
 
@@ -81,7 +101,7 @@ app.post("/register", (request, response) => {
         maxAge: 1000 * 60 * 60 * 24
     })
 
-    return response.redirect("login")
+    return response.render("homepage",{ errors })
     
 });
 
