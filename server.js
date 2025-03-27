@@ -60,6 +60,28 @@ app.get("/login", (request, response) => {
     response.render("login");
 });
 
+app.get("/logout",(request, response) => {
+    response.clearCookie("backEndApp");
+    response.redirect("/");
+});
+
+app.post("/login", (request, response) => {
+
+    const errors = [];
+
+    if(typeof request.body.username !== "string") request.body.username = "";
+    if(typeof request.body.password !== "string") request.body.password = "";
+
+    if(request.body.username.trim() == "" || request.body.password == "") errors.push("Invalid username / password");
+
+    if(errors.length){
+        return response.render("login", {errors});
+    }
+
+    response.send("Thank you")
+
+});
+
 app.post("/register", (request, response) => {
     const errors = [];
     
