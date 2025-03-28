@@ -67,18 +67,44 @@ app.get("/logout",(request, response) => {
 
 app.post("/login", (request, response) => {
 
-    const errors = [];
+    let errors = [];
 
     if(typeof request.body.username !== "string") request.body.username = "";
     if(typeof request.body.password !== "string") request.body.password = "";
 
-    if(request.body.username.trim() == "" || request.body.password == "") errors.push("Invalid username / password");
+    if(request.body.username.trim() == "" || request.body.password == "") errors = ["Invalid username / password"];
 
     if(errors.length){
         return response.render("login", {errors});
     }
 
-    response.send("Thank you")
+    const selectUserStatement = db.prepare("SELECT * FROM users WHERE USERNAME = ?");
+    const selectedUser = selectUserStatement.get(request.body.username);
+
+    if(!selectedUser){
+        errors = ["Invalid username / password"];
+        return response.render("login", { errors })
+    }
+
+    const comparePassword = bcrypt.compareSync(request.body.password, selectedUser.password);
+
+    if(!comparePassword){
+        errors = ["Invalid username / password"];
+        return response.render("login", { errors });
+    }
+
+    let tokenExpiryDate = Math.floor(Date.now() / 1000) + 60 * 60 * 124;
+    const tokenValue = jwt.sign({exp: tokenExpiryDate, userid: selectedUser.id, username: selectedUser.username }, process.env.JWTSECRET)
+
+    //user cookie
+    response.cookie("backEndApp", tokenValue, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60 * 24
+    })
+
+    return response.render("dashboard",{ errors });
 
 });
 
@@ -90,10 +116,18 @@ app.post("/register", (request, response) => {
 
     request.body.username = request.body.username.trim();
 
+    //validate username
     if(!request.body.username) errors.push("You must provide a Username.");
     if(request.body.username && request.body.username.length < 3) errors.push("Username less then 3");
     if(request.body.username && request.body.username.length > 15) errors.push("Username greater then 15");
     if(request.body.username && !request.body.username.match(/^[a-zA-Z0-9]+$/)) errors.push("Username must contain letters and numbers");
+
+    //check if username exists
+
+    const usernameStatement = db.prepare("SELECT * FROM users WHERE USERNAME = ?");
+    const usernameCheck = usernameStatement.get(request.body.username);
+
+    if(usernameCheck) errors.push("Username already exists!!!")
 
     if(!request.body.password) errors.push("You must provide a Password.");
     if(request.body.password && request.body.password.length < 5) errors.push("Password less then 5");
@@ -123,7 +157,7 @@ app.post("/register", (request, response) => {
         maxAge: 1000 * 60 * 60 * 24
     })
 
-    return response.render("homepage",{ errors })
+    return response.render("dashboard",{ errors })
     
 });
 
