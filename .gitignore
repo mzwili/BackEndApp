@@ -14,6 +14,7 @@
 # Environment Variables
 # -----------------------------
 .env*
+!.env.example   # keep example file if you add one
 
 # -----------------------------
 # Logs
@@ -21,6 +22,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
 
 # -----------------------------
 # Build / Production
@@ -29,11 +31,20 @@ yarn-error.log*
 /.next/
 /out/
 /coverage
+/dist
+
+# -----------------------------
+# Playwright (IMPORTANT)
+# -----------------------------
+/playwright-report/
+/test-results/
+/blob-report/
 
 # -----------------------------
 # System Files
 # -----------------------------
 .DS_Store
+Thumbs.db
 *.pem
 
 # -----------------------------
@@ -60,3 +71,4 @@ next-env.d.ts
 *.bak
 *.temp
 *.tmp
+*.swp

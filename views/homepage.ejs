@@ -12,10 +12,13 @@
             <fieldset>
                 <legend>Create Account</legend>
                 <label for="Username"><small>Username</small></label>
-                <input type="text" id="username" name="username" autocomplete="off">
+                <input type="text" id="username" name="username" autocomplete="off" required>
     
                 <label for="password"><small>Password</small></label>
-                <input type="text" id="password" name="password" autocomplete="off" >
+                <input type="password" id="password" name="password" autocomplete="new-password" required>
+
+                <label for="confirmPassword"><small>Confirm Password</small></label>
+                <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required>
                 <br>
                 <button>Sign Up</button>
             </fieldset>

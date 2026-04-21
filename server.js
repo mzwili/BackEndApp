@@ -130,6 +130,7 @@ app.post("/register", (request, response) => {
 
   if (typeof request.body.username !== "string") request.body.username = "";
   if (typeof request.body.password !== "string") request.body.password = "";
+  if (typeof request.body.confirmPassword !== "string") request.body.confirmPassword = "";
 
   request.body.username = request.body.username.trim();
 
@@ -157,6 +158,11 @@ app.post("/register", (request, response) => {
     errors.push("Password less than 5");
   if (request.body.password.length > 25)
     errors.push("Password greater than 25");
+
+  // check if passwords match
+  if (request.body.password !== request.body.confirmPassword) {
+  errors.push("Passwords do not match");
+  }
 
   if (errors.length) {
     return response.render("homepage", { errors });
