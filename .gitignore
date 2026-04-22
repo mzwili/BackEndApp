@@ -72,3 +72,8 @@ next-env.d.ts
 *.temp
 *.tmp
 *.swp
+
+# Playwright
+node_modules/
+/playwright/.cache/
+/playwright/.auth/

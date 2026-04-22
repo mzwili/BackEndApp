@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon server"
   },
   "keywords": [],
   "author": "",
@@ -19,5 +18,9 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.9"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0"
   }
 }
