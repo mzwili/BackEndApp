@@ -122,7 +122,7 @@ app.post("/login", (request, response) => {
     maxAge: 1000 * 60 * 60 * 24,
   });
 
-  return response.render("dashboard", { errors });
+  return response.redirect("/");
 });
 
 app.post("/register", (request, response) => {
@@ -198,7 +198,7 @@ app.post("/register", (request, response) => {
     maxAge: 1000 * 60 * 60 * 24,
   });
 
-  return response.render("dashboard", { errors });
+  return response.redirect("/");
 });
 
 app.listen(4000, () => {
