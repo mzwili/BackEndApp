@@ -91,16 +91,120 @@ test.describe('User Login Positive', () => {
     await expect(page).toHaveURL('/');
   });
 
-  test('should fail with wrong credentials', async ({ page }) => {
+
+});
+
+test.describe('User Login - Negative Scenarios', () => {
+
+  test('should fail with wrong username and password', async ({ page }) => {
+    const login = new LoginPage(page);
+
+    await login.goto();
+    await login.login('wronguser', 'wrongpass');
+
+    const errors = await login.getErrors();
+    expect(errors).toContain('Invalid username / password');
+  });
+
+  test('should fail with correct username but wrong password', async ({ page }) => {
+    const login = new LoginPage(page);
+
+    await login.goto();
+    await login.login('existinguser', 'wrongpass');
+
+    const errors = await login.getErrors();
+    expect(errors).toContain('Invalid username / password');
+  });
+
+  test('should fail with non-existing username', async ({ page }) => {
+    const login = new LoginPage(page);
+
+    await login.goto();
+    await login.login('nonexistentuser', 'password123');
+
+    const errors = await login.getErrors();
+    expect(errors).toContain('Invalid username / password');
+  });
+
+  test('should fail when username is empty', async ({ page }) => {
+    const login = new LoginPage(page);
+
+    await login.goto();
+    await login.login('', 'password123');
+
+    const errors = await login.getErrors();
+    expect(errors).toContain('Invalid username / password');
+  });
+
+  test('should fail when password is empty', async ({ page }) => {
+    const login = new LoginPage(page);
+
+    await login.goto();
+    await login.login('testuser', '');
+
+    const errors = await login.getErrors();
+    expect(errors).toContain('Invalid username / password');
+  });
+
+  test('should fail when both fields are empty', async ({ page }) => {
+    const login = new LoginPage(page);
+
+    await login.goto();
+    await login.login('', '');
+
+    const errors = await login.getErrors();
+    expect(errors).toContain('Invalid username / password');
+  });
+
+  test('should fail with whitespace input', async ({ page }) => {
+    const login = new LoginPage(page);
+
+    await login.goto();
+    await login.login('   ', '   ');
+
+    const errors = await login.getErrors();
+    expect(errors).toContain('Invalid username / password');
+  });
+
+  test('should fail with SQL injection attempt', async ({ page }) => {
+    const login = new LoginPage(page);
+
+    await login.goto();
+    await login.login("' OR 1=1 --", 'password123');
+
+    const errors = await login.getErrors();
+    expect(errors).toContain('Invalid username / password');
+  });
+
+  test('should fail with very long input', async ({ page }) => {
+    const login = new LoginPage(page);
+
+    const longString = 'a'.repeat(1000);
+
+    await login.goto();
+    await login.login(longString, longString);
+
+    const errors = await login.getErrors();
+    expect(errors).toContain('Invalid username / password');
+  });
+
+  test('should fail with special characters', async ({ page }) => {
+    const login = new LoginPage(page);
+
+    await login.goto();
+    await login.login('!@#$%^&*()', '!@#$%^&*()');
+
+    const errors = await login.getErrors();
+    expect(errors).toContain('Invalid username / password');
+  });
+
+  test('should not login without submitting form', async ({ page }) => {
     const login = new LoginPage(page);
 
     await login.goto();
 
-    await login.login('wronguser', 'wrongpass');
-
-    const errors = await login.getErrors();
-
-    expect(errors).toContain('Invalid username / password');
+    // No action
+    await expect(page).toHaveURL(/login/);
   });
 
 });
