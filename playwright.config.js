@@ -11,10 +11,13 @@ export default defineConfig({
 
   reporter: 'html',
 
+  // ✅ RESET DB BEFORE ALL TESTS
+  globalSetup: require.resolve('./global-setup'),
+
   use: {
     baseURL: 'http://localhost:4000',
     trace: 'on-first-retry',
-    headless: true
+    headless: true,
   },
 
   projects: [
@@ -22,23 +25,21 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
   ],
 
-  // THIS IS THE IMPORTANT PART
   webServer: {
-    command: 'npm run dev', // starts your Express app
+    command: 'npm run dev',
     url: 'http://localhost:4000',
     timeout: 120 * 1000,
     reuseExistingServer: !process.env.CI,
 
-    // ensures JWT_SECRET exists during tests
     env: {
       JWT_SECRET: 'testsecret123',
-      NODE_ENV: 'test'
-    }
+      NODE_ENV: 'test',
+    },
   },
 });

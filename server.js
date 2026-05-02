@@ -68,6 +68,11 @@ app.get("/logout", (request, response) => {
   response.redirect("/");
 });
 
+app.get("/register", (request, response) => {
+
+  response.redirect("/");
+});
+
 app.post("/login", (request, response) => {
   let errors = [];
 
@@ -133,16 +138,29 @@ app.post("/register", (request, response) => {
   if (typeof request.body.confirmPassword !== "string") request.body.confirmPassword = "";
 
   request.body.username = request.body.username.trim();
+  request.body.password = request.body.password.trim();
+  request.body.confirmPassword = request.body.confirmPassword.trim();
 
   // validate username
-  if (!request.body.username)
+  if (!request.body.username ) {
     errors.push("You must provide a Username.");
-  if (request.body.username.length < 3)
-    errors.push("Username less than 3");
-  if (request.body.username.length > 15)
-    errors.push("Username greater than 15");
-  if (!request.body.username.match(/^[a-zA-Z0-9]+$/))
-    errors.push("Username must contain letters and numbers");
+  }
+
+  // validate password
+  if (!request.body.password) {
+    errors.push("You must provide a Password.");
+  }
+
+  if (request.body.username){
+    if (request.body.username.length < 3)
+      errors.push("Username less than 3");
+    if (request.body.username.length > 15)
+      errors.push("Username greater than 15");
+    if (!request.body.username.match(/^[a-zA-Z0-9]+$/))
+      errors.push("Username must contain letters and numbers");
+  }
+   
+  
 
   // check if username exists
   const usernameCheck = db
@@ -151,13 +169,16 @@ app.post("/register", (request, response) => {
 
   if (usernameCheck) errors.push("Username already exists!!!");
 
-  // validate password
-  if (!request.body.password)
-    errors.push("You must provide a Password.");
-  if (request.body.password.length < 5)
-    errors.push("Password less than 5");
-  if (request.body.password.length > 25)
-    errors.push("Password greater than 25");
+  
+
+  if (request.body.password){
+     if (request.body.password.length < 5)
+      errors.push("Password less than 5");
+    if (request.body.password.length > 25)
+      errors.push("Password greater than 25");
+  }
+    
+ 
 
   // check if passwords match
   if (request.body.password !== request.body.confirmPassword) {

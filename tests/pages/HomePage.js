@@ -5,6 +5,7 @@ class HomePage {
     this.passwordInput = page.locator('#password');
     this.confirmPasswordInput = page.locator('#confirmPassword');
     this.signUpButton = page.locator('button:has-text("Sign Up")');
+    // this.logoutButton = page.getByRole('link', { name: 'logout' });
     this.errorMessages = page.locator('.notice');
   }
 
